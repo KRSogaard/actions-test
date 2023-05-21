@@ -19,7 +19,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          dockerfile: .docker/dev/Dockerfile
+          file: .docker/dev/Dockerfile
           push: false
           tags: ${{ env.IMAGE_NAME }}:latest
 
@@ -50,7 +50,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          dockerfile: .docker/prod/Dockerfile
+          file: .docker/prod/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
