@@ -7,7 +7,7 @@ const App: Component = () => {
     <div class="text-center">
       <header class="bg-gray-800 min-h-screen flex flex-col items-center justify-center text-white text-3xl">
         <img src={logo} class="animate-spin h-[40vmin] pointer-events-none" alt="logo" />
-        <span>MagicDoor</span>
+        <span>MagicDoor.com</span>
       </header>
     </div>
   );
