@@ -21,10 +21,11 @@ jobs:
           context: .
           file: .docker/dev/Dockerfile
           push: false
-          tags: ${{ env.IMAGE_NAME }}:latest
+          load: true
+          tags: ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
 
       - name: Run the Docker container
-        run: docker run --name my-container -d ${{ env.IMAGE_NAME }}:latest
+        run: docker run --name my-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
 
       - name: Run tests in the Docker container
         run: docker exec my-container npm test
