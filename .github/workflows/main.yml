@@ -25,9 +25,9 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
 
       - name: Run the Docker container
-        run: docker run --name dev-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
+        run: docker run --name dev-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }} tail -f /dev/null
 
-      - name: Get Docker logs
+      - name: Check running containers
         run: docker ps
 
       - name: Get Docker logs
