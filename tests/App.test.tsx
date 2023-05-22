@@ -5,8 +5,7 @@ import "@testing-library/jest-dom"; // 👈 this is imported in order to use the
 
 describe("App", () => {
   it("should render the app", () => {
-    const { getByText, debug } = render(() => <App />);
-    debug();
+    const { getByText } = render(() => <App />);
     expect(getByText("MagicDoor.com")).toBeInTheDocument();
   });
 });

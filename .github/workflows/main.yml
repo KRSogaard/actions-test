@@ -6,7 +6,7 @@ env:
   IMAGE_NAME: magicdoor-portal-frontend
 
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
@@ -63,7 +63,7 @@ jobs:
           attempt=0
           until [ $attempt -ge 12 ]
           do
-            docker exec prod-container curl http://localhost:8080 && break
+            docker exec prod-container curl http://localhost:80 && break
             echo "Waiting for app launch, attempt $attempt..."
             attempt=$[$attempt+1]
             sleep 5
@@ -74,7 +74,7 @@ jobs:
             exit 1
           fi
 
-  build:
+  build-prod:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
 
