@@ -50,12 +50,15 @@ jobs:
           load: true
           tags: ${{ env.IMAGE_NAME }}-prod:${{ github.sha }}
 
+      - name: Run the Prod Docker container
+        run: docker run --name prod-container -d ${{ env.IMAGE_NAME }}-prod:${{ github.sha }}
+
       - name: Health check (Production)
         run: |
           attempt=0
           until [ $attempt -ge 12 ]
           do
-            curl http://localhost:80 && break
+            docker exec prod-container curl http://localhost:80 && break
             echo "Waiting for app launch, attempt $attempt..."
             attempt=$[$attempt+1]
             sleep 5
