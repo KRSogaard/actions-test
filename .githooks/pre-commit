@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Run lint before committing
+npm run lint
+
+# Check if branch exists
+branch_name=$(git symbolic-ref --quiet --short HEAD)
+
+if [ -n "$branch_name" ]; then
+    # Run linting before committing
+    npm run lint
+
+    # If linting errors occurred, prevent the commit
+    if [ $? -ne 0 ]; then
+        echo "Linting failed. Please fix the errors before committing."
+        exit 1
+    fi
+else
+    echo "Branch has been deleted. Cannot commit changes."
+    exit 1
+fi
