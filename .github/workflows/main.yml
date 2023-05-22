@@ -41,6 +41,11 @@ jobs:
             sleep 5
           done
 
+          if [ $attempt -ge 12 ]; then
+            echo "App did not start correctly"
+            exit 1
+          fi
+
       - name: Build Docker Prod image
         uses: docker/build-push-action@v2
         with:
@@ -63,6 +68,11 @@ jobs:
             attempt=$[$attempt+1]
             sleep 5
           done
+
+          if [ $attempt -ge 12 ]; then
+            echo "App did not start correctly"
+            exit 1
+          fi
 
   build:
     runs-on: ubuntu-latest
