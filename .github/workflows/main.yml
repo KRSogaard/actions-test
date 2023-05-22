@@ -35,7 +35,7 @@ jobs:
           attempt=0
           until [ $attempt -ge 24 ]
           do
-            curl http://localhost:3000 && break
+            docker exec dev-container curl http://localhost:3000 && break
             echo "Waiting for app launch, attempt $attempt..."
             attempt=$[$attempt+1]
             sleep 5
@@ -50,7 +50,7 @@ jobs:
           load: true
           tags: ${{ env.IMAGE_NAME }}-prod:${{ github.sha }}
 
-      - name: Health check (development)
+      - name: Health check (Production)
         run: |
           attempt=0
           until [ $attempt -ge 24 ]
