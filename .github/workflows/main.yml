@@ -63,7 +63,7 @@ jobs:
           attempt=0
           until [ $attempt -ge 12 ]
           do
-            docker exec prod-container curl http://localhost:80 && break
+            docker exec prod-container curl http://localhost:8080 && break
             echo "Waiting for app launch, attempt $attempt..."
             attempt=$[$attempt+1]
             sleep 5
