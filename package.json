@@ -4,11 +4,13 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "docker-compose --file docker-compose.dev.yml up",
+    "dev": "docker-compose --file .docker/docker-compose.dev.yml up",
+    "prod": "docker-compose --file .docker/docker-compose.prod.yml up",
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest",
-    "test-cicd": "vitest run"
+    "test-cicd": "vitest run",
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"
   },
   "license": "MIT",
   "devDependencies": {
