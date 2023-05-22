@@ -27,14 +27,39 @@ jobs:
       - name: Run the Docker container
         run: docker run --name dev-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
 
-      - name: Check running containers
-        run: docker ps
-
-      - name: Get Docker logs
-        run: docker logs dev-container
-
       - name: Run tests in the Docker container
         run: docker exec dev-container npm run test-cicd
+
+      - name: Health check (development)
+        run: |
+          attempt=0
+          until [ $attempt -ge 24 ]
+          do
+            curl http://localhost:3000 && break
+            echo "Waiting for app launch, attempt $attempt..."
+            attempt=$[$attempt+1]
+            sleep 5
+          done
+
+      - name: Build Docker Prod image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: .docker/prod/Dockerfile
+          push: false
+          load: true
+          tags: ${{ env.IMAGE_NAME }}-prod:${{ github.sha }}
+
+      - name: Health check (development)
+        run: |
+          attempt=0
+          until [ $attempt -ge 24 ]
+          do
+            curl http://localhost:80 && break
+            echo "Waiting for app launch, attempt $attempt..."
+            attempt=$[$attempt+1]
+            sleep 5
+          done
 
   build:
     runs-on: ubuntu-latest
