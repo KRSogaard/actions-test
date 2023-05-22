@@ -29,6 +29,10 @@ jobs:
       - name: Run the Docker container
         run: docker run --name dev-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
 
+      - name: Run ESLint
+        run: |
+          docker exec dev-container npm run lint
+
       - name: Run tests in the Docker container
         run: docker exec dev-container npm run test-cicd
 

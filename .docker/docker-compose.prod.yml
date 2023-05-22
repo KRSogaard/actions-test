@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  magicdoor-portal-frontend:
+    build:
+      context: .
+      dockerfile: ./.docker/prod/Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 8080:80
+    command: ["nginx", "-g", "daemon off;"]
