@@ -34,7 +34,7 @@ jobs:
         run: docker logs dev-container
 
       - name: Run tests in the Docker container
-        run: docker exec dev-container npm test
+        run: docker exec dev-container npm test -- --single-run
 
   build:
     runs-on: ubuntu-latest
