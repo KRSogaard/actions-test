@@ -25,10 +25,16 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
 
       - name: Run the Docker container
-        run: docker run --name my-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
+        run: docker run --name dev-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
+
+      - name: Get Docker logs
+        run: docker ps
+
+      - name: Get Docker logs
+        run: docker logs dev-container
 
       - name: Run tests in the Docker container
-        run: docker exec my-container npm test
+        run: docker exec dev-container npm test
 
   build:
     runs-on: ubuntu-latest
