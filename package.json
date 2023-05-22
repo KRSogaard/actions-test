@@ -4,10 +4,11 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "docker-compose --file docker-compose.dev.yml up",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test-cicd": "vitest run"
   },
   "license": "MIT",
   "devDependencies": {

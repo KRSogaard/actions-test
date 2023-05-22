@@ -1,6 +1,7 @@
 # pull official base image
-FROM node:20.2-alpine3.16
+FROM node:18.9-alpine3.16
 
+RUN apk add --no-cache curl
 
 WORKDIR /app
 
@@ -11,3 +12,5 @@ RUN npm install
 COPY . .
 
 EXPOSE 3000
+
+CMD ["npm", "start"]

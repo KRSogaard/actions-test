@@ -13,6 +13,7 @@ RUN npm run build
 
 FROM nginx:1.19.0-alpine as prod
 
+RUN apk add --no-cache curl
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80

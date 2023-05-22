@@ -1,0 +1,102 @@
+name: Docker Image CI
+
+on: push
+
+env:
+  IMAGE_NAME: magicdoor-portal-frontend
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: .docker/dev/Dockerfile
+          push: false
+          load: true
+          tags: ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
+
+      - name: Run the Docker container
+        run: docker run --name dev-container -d ${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
+
+      - name: Run tests in the Docker container
+        run: docker exec dev-container npm run test-cicd
+
+      - name: Health check (development)
+        run: |
+          attempt=0
+          until [ $attempt -ge 12 ]
+          do
+            docker exec dev-container curl http://localhost:3000 && break
+            echo "Waiting for app launch, attempt $attempt..."
+            attempt=$[$attempt+1]
+            sleep 5
+          done
+
+          if [ $attempt -ge 12 ]; then
+            echo "App did not start correctly"
+            exit 1
+          fi
+
+      - name: Build Docker Prod image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: .docker/prod/Dockerfile
+          push: false
+          load: true
+          tags: ${{ env.IMAGE_NAME }}-prod:${{ github.sha }}
+
+      - name: Run the Prod Docker container
+        run: docker run --name prod-container -d ${{ env.IMAGE_NAME }}-prod:${{ github.sha }}
+
+      - name: Health check (Production)
+        run: |
+          attempt=0
+          until [ $attempt -ge 12 ]
+          do
+            docker exec prod-container curl http://localhost:80 && break
+            echo "Waiting for app launch, attempt $attempt..."
+            attempt=$[$attempt+1]
+            sleep 5
+          done
+
+          if [ $attempt -ge 12 ]; then
+            echo "App did not start correctly"
+            exit 1
+          fi
+
+  build-prod:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: .docker/prod/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
